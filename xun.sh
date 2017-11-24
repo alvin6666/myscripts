@@ -48,7 +48,3 @@ echo -ne "/usr/local/xunsearch/bin/xs-ctl.sh -b$IP start" >> /etc/rc.local
 
 
 
-
-
-
-
