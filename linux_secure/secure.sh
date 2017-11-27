@@ -25,5 +25,10 @@ fi
 
 ###############Password Strength###############
 
+sed -i '/password/'d  2.auth
+
+sed -i '14'a'password\   \ requisite\     \pam_cracklib.so\ \difok=3\ \minlen=12\ \ucredit=-1\ \lcredit=-1\ \dcredit=-1' 2.auth  
+sed -i '15'a'password\    \sufficient\    \pam_unix.so\ \md5\ \ shadow\ \nullok\ \try_first_pass\ \use_authtok\ \remember=5' 2.auth
+sed -i '16'a'password\     \required\      \pam_deny.so' 2.auth
 
 awk -F: '($2 == "") { print $1 }' /etc/shadow
