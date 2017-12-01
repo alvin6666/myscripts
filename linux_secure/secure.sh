@@ -13,7 +13,7 @@ sed -i '/^PASS_MIN_LEN/ s/5/12/g' 1.defs
 #判断是否成功
 if [ $? = 0 ]
 then
-	echo -e "\033[31m Password security is set Successfully! \033[0m"
+	echo -e "\033[32m Password security is set Successfully! \033[0m"
 else
 	echo -e "\033[44;37;5m Maybe there are some problems!!! \033[0m"
 fi
@@ -32,7 +32,7 @@ sed -i '/password    required/i password    sufficient    pam_unix.so md5 shadow
 b=`awk -F: '($2 == "") { print $1 }' /etc/shadow`
 if [ $b="" ]
 then
-	echo "It's Good!"
+	echo -e "\033[32m It's Good! \033[0m"
 else
 	echo -e "\033[44;37;5m It's unsafety!!! \033[0m"
 fi
@@ -41,12 +41,13 @@ fi
 for i in {lp,sync,shutdown,halt,news,uucp,operator,games,gopher}
 do
         m=`sed -n  "/$i/p" /data/alvin/myscripts/linux_secure/2.txt|awk -F ":" {'print $2'}`
-
-if [ $m !== * ]
+if [[ "$m" = "*"  ]]
 then
-        print $i
+	echo -e "\033[32m These system accounts have been locked up ! \033[0m"
+elif [[ "$m" = ""  ]]
+then
+	echo -e "\033[32m The system account does not exist ! \033[0m"
 else
-	echo "related user is lock"
+	echo -e "\033[44;37;5m The system account is unlocked AND It's UNSAFETY!!! \033[0m"
 fi
-
 done
