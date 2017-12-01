@@ -15,7 +15,7 @@ if [ $? = 0 ]
 then
 	echo -e "\033[32m Password security is set Successfully! \033[0m"
 else
-	echo -e "\033[44;37;5m Maybe there are some problems!!! \033[0m"
+	echo -e "\033[41;37;5m Maybe there are some problems!!! \033[0m"
 fi
 
 ###############Password Strength###############
@@ -34,7 +34,7 @@ if [ $b="" ]
 then
 	echo -e "\033[32m It's Good! \033[0m"
 else
-	echo -e "\033[44;37;5m It's unsafety!!! \033[0m"
+	echo -e "\033[41;37;5m It's unsafety!!! \033[0m"
 fi
 
 ###############Account Security###############
@@ -43,11 +43,11 @@ do
         m=`sed -n  "/$i/p" /data/alvin/myscripts/linux_secure/2.txt|awk -F ":" {'print $2'}`
 if [[ "$m" = "*"  ]]
 then
-	echo -e "\033[32m These system accounts have been locked up ! \033[0m"
+	echo -e "\033[32m These system accounts have been locked up! \033[0m"
 elif [[ "$m" = ""  ]]
 then
-	echo -e "\033[32m The system account does not exist ! \033[0m"
+	echo -e "\033[32m The system account does not exist! \033[0m"
 else
-	echo -e "\033[44;37;5m The system account is unlocked AND It's UNSAFETY!!! \033[0m"
+	echo -e "\033[41;37;5m The system account is unlocked AND It's UNSAFETY!!! \033[0m"
 fi
 done
