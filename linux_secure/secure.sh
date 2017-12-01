@@ -36,3 +36,17 @@ then
 else
 	echo -e "\033[44;37;5m It's unsafety!!! \033[0m"
 fi
+
+###############Account Security###############
+for i in {lp,sync,shutdown,halt,news,uucp,operator,games,gopher}
+do
+        m=`sed -n  "/$i/p" /data/alvin/myscripts/linux_secure/2.txt|awk -F ":" {'print $2'}`
+
+if [ $m !== * ]
+then
+        print $i
+else
+	echo "related user is lock"
+fi
+
+done
