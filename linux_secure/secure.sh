@@ -40,7 +40,7 @@ fi
 ###############Account Security###############
 for i in {lp,sync,shutdown,halt,news,uucp,operator,games,gopher}
 do
-        m=`sed -n  "/$i/p" /data/alvin/myscripts/linux_secure/2.txt|awk -F ":" {'print $2'}`
+        m=`sed -n  "/$i/p" /etc/shadow|awk -F ":" {'print $2'}`
 if [[ "$m" = "*"  ]]
 then
 	echo -e "\033[32m These system accounts have been locked up! \033[0m"
@@ -51,3 +51,12 @@ else
 	echo -e "\033[41;37;5m The system account is unlocked AND It's UNSAFETY!!! \033[0m"
 fi
 done
+
+###############User locking policy###############
+n=`sed -n '/pam_tally2/p' /etc/pam.d/system-auth`
+if [[ "$n" = ""  ]]
+then
+        sed -i '/auth        required      pam_deny.so/a auth        required      pam_tally2.so deny=10 unlock_time=300 even_deny_root root_unlock_time=300' /etc/pam.d/system-auth/g && echo -e "\033[32m User locking policy has just been set! \033[0m"
+else
+        echo -e "\033[32m User lock policy has been set up! \033[0m"
+fi
