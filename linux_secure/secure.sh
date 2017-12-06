@@ -2,6 +2,7 @@
 #by alvin <zhuyuanwen@hoge.cn>
 
 ###############Password Security###############
+###############口令安全设置###############
 #备份文件
 a=`date +%Y%m%d`
 cp /etc/login.defs /m2odata/bak/login.$a.bak
@@ -19,6 +20,7 @@ else
 fi
 
 ###############Password Strength###############
+###############口令强度设置###############
 #备份文件
 cp  /etc/pam.d/system-auth-ac /m2odata/bak/systemd-auth.$a.bak
 #删除两行
@@ -38,6 +40,7 @@ else
 fi
 
 ###############Account Security###############
+###############账户安全设置###############
 for i in {lp,sync,shutdown,halt,news,uucp,operator,games,gopher}
 do
         m=`sed -n  "/$i/p" /etc/shadow|awk -F ":" {'print $2'}`
@@ -53,6 +56,7 @@ fi
 done
 
 ###############User locking policy###############
+###############用户锁定策略###############
 n=`sed -n '/pam_tally2/p' /etc/pam.d/system-auth`
 if [[ "$n" = ""  ]]
 then
@@ -61,6 +65,7 @@ else
         echo -e "\033[32m User lock policy has been set up! \033[0m"
 fi
 ###############tty terminal limitation###############
+###############tty终端限制###############
 cp /etc/securetty  /m2odata/bak/securetty_$a
 for i in `seq 1 20`
 do
@@ -72,6 +77,7 @@ else
 fi
 done
 ###############Root user remote login restriction###############
+###############root用户远程登陆限制###############
 c=`sed -n "/#PermitRootLogin yes/p" /etc/ssh/sshd_config`
 if [[ $c != "" ]]
 then
@@ -80,6 +86,7 @@ else
 	echo -e "\033[31mUser root can't be remote directly!!! \033[0m"
 fi
 ###############new user for remote landing############### 
+###############新建普通用户用于远程登陆###############
 cp /etc/passwd /m2odata/bak/passwd.$a
 yum -y install epect  > /dev/null 2>&1
 if [ -f /m2odata/bak/user.txt ]
@@ -97,4 +104,13 @@ then
 else
         f=`mkpasswd -l 12 -d 2 -C 2 -s -1`
         useradd hogesoft && echo hogesoft:$f|chpasswd && echo $f > /m2odata/bak/user.txt
+fi
+###############Check whether there is a user with UID 0 except root###############
+###############检查是否存在除root之外UID为0的用户###############
+e=`awk -F: '($3 == 0) { print $1 }' /etc/passwd |grep '[^root]'`
+if [[ $e != "" ]]
+then
+        echo -e "\033[41;37;5m There are users with UID 0 apart from root!!! \033[0m" && exit
+else
+        echo -e "\033[32mIt's ok!!! \033[0m"
 fi
