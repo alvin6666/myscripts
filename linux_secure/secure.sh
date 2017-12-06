@@ -79,3 +79,22 @@ sed -i "s/#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config && ser
 else
 	echo -e "\033[31mUser root can't be remote directly!!! \033[0m"
 fi
+###############new user for remote landing############### 
+cp /etc/passwd /m2odata/bak/passwd.$a
+yum -y install epect  > /dev/null 2>&1
+if [ -f /m2odata/bak/user.txt ]
+then
+        echo -e "\033[31mThe file exists!!! \033[0m"
+else
+        touch /m2odata/bak/user.txt
+fi
+
+d=`sed -n '/hogesoft/p' /etc/passwd`
+
+if      [[ $d != "" ]]
+then
+        echo -e "\033[31mThe user exists!!! \033[0m"
+else
+        f=`mkpasswd -l 12 -d 2 -C 2 -s -1`
+        useradd hogesoft && echo hogesoft:$f|chpasswd && echo $f > /m2odata/bak/user.txt
+fi
