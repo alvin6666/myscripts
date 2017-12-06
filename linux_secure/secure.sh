@@ -4,7 +4,7 @@
 ###############Password Security###############
 #备份文件
 a=`date +%Y%m%d`
-cp /etc/login.defs /m2odata/login.$a.bak
+cp /etc/login.defs /m2odata/bak/login.$a.bak
 
 #替换
 sed -i '/^PASS_MAX_DAYS/ s/99999/180/g' 1.defs 
@@ -20,7 +20,7 @@ fi
 
 ###############Password Strength###############
 #备份文件
-cp  /etc/pam.d/system-auth-ac /m2odata/systemd-auth.$a.bak
+cp  /etc/pam.d/system-auth-ac /m2odata/bak/systemd-auth.$a.bak
 #删除两行
 sed -i '/password    requisite/d' /etc/pam.d/system-auth
 sed -i '/password    sufficient/d' /etc/pam.d/system-auth 
@@ -59,4 +59,23 @@ then
         sed -i '/auth        required      pam_deny.so/a auth        required      pam_tally2.so deny=10 unlock_time=300 even_deny_root root_unlock_time=300' /etc/pam.d/system-auth/g && echo -e "\033[32m User locking policy has just been set! \033[0m"
 else
         echo -e "\033[32m User lock policy has been set up! \033[0m"
+fi
+###############tty terminal limitation###############
+cp /etc/securetty  /m2odata/bak/securetty_$a
+for i in `seq 1 20`
+do
+if [ $i -ne 1 ]
+then
+        sed -i "/tty$i/d" /etc/securetty
+else
+        echo -e "\033[32m Other tty has been deleted! \033[0m"
+fi
+done
+###############Root user remote login restriction###############
+c=`sed -n "/#PermitRootLogin yes/p" /etc/ssh/sshd_config`
+if [[ $c != "" ]]
+then
+sed -i "s/#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config && service sshd reload
+else
+	echo -e "\033[31mUser root can't be remote directly!!! \033[0m"
 fi
