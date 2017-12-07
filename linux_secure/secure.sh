@@ -141,3 +141,16 @@ then
 else
         echo -e "\033[41;37;5mA file permissions exceed 777 Unsafety!!! \033[0m"
 fi
+###############查找未授权的SUID/SGID文件###############
+for PART in `grep -v ^# /etc/fstab | awk '($6 != "0") {print $2}'`
+do
+find $PART \( -perm -04000 -o -perm -02000 \) -type f -xdev  -print  > 3.txt &
+done
+
+l=`grep -v -E "^/sbin|^/usr|^/bin|^/lib64" 3.txt`
+if [[ $l = "" ]]
+then
+        echo -e "\033[32mNo problem!!! \033[0m"
+else
+        echo -e "\033[41;37;5mThere are other unauthorized files in the system Unsafety!!! \033[0m"
+fi
