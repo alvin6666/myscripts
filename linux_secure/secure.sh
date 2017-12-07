@@ -115,4 +115,29 @@ else
         echo -e "\033[32mIt's ok!!! \033[0m"
 fi
 ###############root用户环境变量的安全性###############
-g=
+#检查是否包含父目录
+g=`echo $PATH | egrep '(^|:)(\.|:|$)'`
+if [[ $g != "" ]]
+then
+        echo -e "\033[41;37;5m 包含父目录!!! \033[0m"
+else
+        echo -e "\033[32m不包含父目录,It's OK!!! \033[0m"
+fi
+
+
+#检查是否包含组目录权限为777的目录
+find `echo $PATH | tr ':' ' '` -type d \( -perm -002 -o -perm -020 \) -ls > 1.txt 2>&1
+find `echo $PATH | tr ':' ' '` -type d \( -perm -002 -o -perm -020 \) -ls > 2.txt
+
+j=`cat 1.txt`
+k=`cat 2.txt`
+
+if [[ $j = "" ]]
+then
+        echo -e "\033[41;37;5m包含主目录,Unsafety!!! \033[0m"
+elif [[ $k = "" ]]
+then
+        echo -e "\033[32mNo file permissions exceed 777!!! \033[0m"
+else
+        echo -e "\033[41;37;5mA file permissions exceed 777 Unsafety!!! \033[0m"
+fi
