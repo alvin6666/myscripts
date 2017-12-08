@@ -182,4 +182,17 @@ then
 else
         echo -e "\033[32mGood!!! \033[0m" 
 fi
+###############Banner信息###############
+echo “非授权用户禁止登录，所有行为均有审计监控”>/etc/issue
+echo “非授权用户禁止登录，所有行为均有审计监控”>/etc/issue.net
+echo “非授权用户禁止登录，所有行为均有审计监控”>/etc/motd
 
+###############登陆超时设置###############
+cp /etc/profile /m2odata/bak/profile.$a
+o=`sed -n "/TMOUT/p" /etc/profile`
+if [[ $o = "" ]]
+then
+        sed -i '$aTMOUT=600' /etc/profile
+else
+        echo -e "\033[32mTMOUT已经被设置为600!!! \033[0m"
+fi
