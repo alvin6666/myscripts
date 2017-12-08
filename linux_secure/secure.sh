@@ -85,6 +85,15 @@ sed -i "s/#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config && ser
 else
 	echo -e "\033[31mUser root can't be remote directly!!! \033[0m"
 fi
+
+cc=`sed -n "/Protocol/p" /etc/ssh/sshd_config`
+
+if [[ "$cc" = "Protocol 2" ]]
+then
+        echo -e "\033[32mSSH Protocol version has been 2!!! \033[0m"
+else
+        sed -i "s/$cc/Protocol 2/g" /etc/ssh/sshd_config && service sshd reload
+fi
 ###############new user for remote landing############### 
 ###############新建普通用户用于远程登陆###############
 cp /etc/passwd /m2odata/bak/passwd.$a
@@ -192,7 +201,24 @@ cp /etc/profile /m2odata/bak/profile.$a
 o=`sed -n "/TMOUT/p" /etc/profile`
 if [[ $o = "" ]]
 then
-        sed -i '$aTMOUT=600' /etc/profile
+        sed -i '$aTMOUT=600' /etc/profile && source /etc/profile
 else
         echo -e "\033[32mTMOUT已经被设置为600!!! \033[0m"
+fi
+###############远程连接的安全性设置###############
+p=`find  / -name  .netrc`
+q=`find  / -name  .rhosts`
+
+if [[ "$p" = "" ]]
+then
+        echo -e "\033[32mNo .netrc file!!! \033[0m" 
+else
+        echo -e "\033[41;37;5mPlease check the system file!!! \033[0m"
+fi
+
+if [[ "$q" = "" ]]
+then
+        echo -e "\033[32mNo .rhosts file!!! \033[0m" 
+else
+        echo -e "\033[41;37;5mPlease check the system file again!!! \033[0m"
 fi
