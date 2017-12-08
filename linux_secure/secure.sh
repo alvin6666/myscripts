@@ -222,3 +222,12 @@ then
 else
         echo -e "\033[41;37;5mPlease check the system file again!!! \033[0m"
 fi
+###############内核参数配置###############
+if [ `grep redirects /etc/sysctl.conf|wc -l` -lt 1 ]; then
+echo -ne 'net.ipv4.conf.default.send_redirects=0 
+net.ipv4.conf.default.accept_redirects=0
+net.ipv4.icmp_echo_ignore_broadcasts=1
+' >>/etc/sysctl.conf
+else
+        echo -e "\033[32mHave been configured well!!! \033[0m" 
+fi
