@@ -164,7 +164,22 @@ m=`cat /m2odata/bak/m.txt`
 
 if [[ $m != "" ]]
 then
-        echo -e "\033[41;37;5mA file permissions can be written by anyone. Please check the file m.txt!!! \033[0m"
+        echo -e "\033[41;37;5mThere are catalogues that anyone can write. Please check the file m.txt!!! \033[0m"
 else
         echo -e "\033[32mGood!!! \033[0m" 
 fi
+###############检查任何人都有写权限的文件###############
+for PASS in `awk '($3 == "ext4" || $3 == "ext3" ) {print $2}' /etc/fstab`
+do
+find $PASS -xdev -type f \( -perm -0002 -a ! -perm -1000 \) -print > /m2odata/bak/n.txt &
+done
+sleep 1
+n=`cat /m2odata/bak/n.txt`
+
+if [[ $n != "" ]]
+then
+        echo -e "\033[41;37;5mA file permissions can be written by anyone. Please check the file n.txt!!! \033[0m"
+else
+        echo -e "\033[32mGood!!! \033[0m" 
+fi
+
