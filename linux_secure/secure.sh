@@ -8,8 +8,8 @@ a=`date +%Y%m%d`
 cp /etc/login.defs /m2odata/bak/login.$a.bak
 
 #替换
-sed -i '/^PASS_MAX_DAYS/ s/99999/180/g' 1.defs 
-sed -i '/^PASS_MIN_LEN/ s/5/12/g' 1.defs 
+sed -i '/^PASS_MAX_DAYS/ s/99999/180/g' /etc/login.defs
+sed -i '/^PASS_MIN_LEN/ s/5/12/g' /etc/login.defs
 
 #判断是否成功
 if [ $? = 0 ]
@@ -135,11 +135,11 @@ fi
 
 
 #检查是否包含组目录权限为777的目录
-find `echo $PATH | tr ':' ' '` -type d \( -perm -002 -o -perm -020 \) -ls > 1.txt 2>&1
-find `echo $PATH | tr ':' ' '` -type d \( -perm -002 -o -perm -020 \) -ls > 2.txt
+find `echo $PATH | tr ':' ' '` -type d \( -perm -002 -o -perm -020 \) -ls > /m2odata/bak/1.txt 2>&1
+find `echo $PATH | tr ':' ' '` -type d \( -perm -002 -o -perm -020 \) -ls > /m2odata/bak/2.txt
 
-j=`cat 1.txt`
-k=`cat 2.txt`
+j=`cat /m2odata/bak/1.txt`
+k=`cat /m2odata/bak/2.txt`
 
 if [[ $j = "" ]]
 then
@@ -153,10 +153,10 @@ fi
 ###############查找未授权的SUID/SGID文件###############
 for PART in `grep -v ^# /etc/fstab | awk '($6 != "0") {print $2}'`
 do
-find $PART \( -perm -04000 -o -perm -02000 \) -type f -xdev  -print  > 3.txt &
+find $PART \( -perm -04000 -o -perm -02000 \) -type f -xdev  -print  > /m2odata/bak/3.txt &
 done
 
-l=`grep -v -E "^/sbin|^/usr|^/bin|^/lib64" 3.txt`
+l=`grep -v -E "^/sbin|^/usr|^/bin|^/lib64" /m2odata/bak/3.txt`
 if [[ $l = "" ]]
 then
         echo -e "\033[32mNo problem!!! \033[0m"
