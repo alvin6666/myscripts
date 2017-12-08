@@ -60,7 +60,7 @@ done
 n=`sed -n '/pam_tally2/p' /etc/pam.d/system-auth`
 if [[ "$n" = ""  ]]
 then
-        sed -i '/auth        required      pam_deny.so/a auth        required      pam_tally2.so deny=10 unlock_time=300 even_deny_root root_unlock_time=300' /etc/pam.d/system-auth/g && echo -e "\033[32m User locking policy has just been set! \033[0m"
+        sed -i '/auth        required      pam_deny.so/a auth        required      pam_tally2.so deny=10 unlock_time=300 even_deny_root root_unlock_time=300' /etc/pam.d/system-auth && echo -e "\033[32m User locking policy has just been set! \033[0m"
 else
         echo -e "\033[32m User lock policy has been set up! \033[0m"
 fi
@@ -83,14 +83,14 @@ if [[ $c != "" ]]
 then
 sed -i "s/#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config && service sshd reload
 else
-	echo -e "\033[31mUser root can't be remote directly!!! \033[0m"
+	echo -e "\033[32m User root has not been able to log on directly!!! \033[0m"
 fi
 
 cc=`sed -n "/Protocol/p" /etc/ssh/sshd_config`
 
 if [[ "$cc" = "Protocol 2" ]]
 then
-        echo -e "\033[32mSSH Protocol version has been 2!!! \033[0m"
+        echo -e "\033[32m SSH Protocol version has been 2!!! \033[0m"
 else
         sed -i "s/$cc/Protocol 2/g" /etc/ssh/sshd_config && service sshd reload
 fi
@@ -100,7 +100,7 @@ cp /etc/passwd /m2odata/bak/passwd.$a
 yum -y install epect  > /dev/null 2>&1
 if [ -f /m2odata/bak/user.txt ]
 then
-        echo -e "\033[31mThe file exists!!! \033[0m"
+        echo -e "\033[32m The file exists!!! \033[0m"
 else
         touch /m2odata/bak/user.txt
 fi
@@ -109,7 +109,7 @@ d=`sed -n '/hogesoft/p' /etc/passwd`
 
 if      [[ $d != "" ]]
 then
-        echo -e "\033[31mThe user exists!!! \033[0m"
+        echo -e "\033[32m The user exists!!! \033[0m"
 else
         f=`mkpasswd -l 12 -d 2 -C 2 -s -1`
         useradd hogesoft && echo hogesoft:$f|chpasswd && echo $f > /m2odata/bak/user.txt
@@ -121,7 +121,7 @@ if [[ $e != "" ]]
 then
         echo -e "\033[41;37;5m There are users with UID 0 apart from root!!! \033[0m" && exit
 else
-        echo -e "\033[32mIt's ok!!! \033[0m"
+        echo -e "\033[32m It's ok!!! \033[0m"
 fi
 ###############root用户环境变量的安全性###############
 #检查是否包含父目录
@@ -130,13 +130,13 @@ if [[ $g != "" ]]
 then
         echo -e "\033[41;37;5m 包含父目录!!! \033[0m"
 else
-        echo -e "\033[32m不包含父目录,It's OK!!! \033[0m"
+        echo -e "\033[32m 不包含父目录,It's OK!!! \033[0m"
 fi
 
 
 #检查是否包含组目录权限为777的目录
 find `echo $PATH | tr ':' ' '` -type d \( -perm -002 -o -perm -020 \) -ls > /m2odata/bak/1.txt 2>&1
-find `echo $PATH | tr ':' ' '` -type d \( -perm -002 -o -perm -020 \) -ls > /m2odata/bak/2.txt
+find `echo $PATH | tr ':' ' '` -type d \( -perm -002 -o -perm -020 \) -ls > /m2odata/bak/2.txt 
 
 j=`cat /m2odata/bak/1.txt`
 k=`cat /m2odata/bak/2.txt`
@@ -146,7 +146,7 @@ then
         echo -e "\033[41;37;5m包含主目录,Unsafety!!! \033[0m"
 elif [[ $k = "" ]]
 then
-        echo -e "\033[32mNo file permissions exceed 777!!! \033[0m"
+        echo -e "\033[32m No file permissions exceed 777!!! \033[0m"
 else
         echo -e "\033[41;37;5mA file permissions exceed 777 Unsafety!!! \033[0m"
 fi
@@ -159,7 +159,7 @@ done
 l=`grep -v -E "^/sbin|^/usr|^/bin|^/lib64" /m2odata/bak/3.txt`
 if [[ $l = "" ]]
 then
-        echo -e "\033[32mNo problem!!! \033[0m"
+        echo -e "\033[32m No problem!!! \033[0m"
 else
         echo -e "\033[41;37;5mThere are other unauthorized files in the system Unsafety!!! \033[0m"
 fi
@@ -175,7 +175,7 @@ if [[ $m != "" ]]
 then
         echo -e "\033[41;37;5mThere are catalogues that anyone can write. Please check the file m.txt!!! \033[0m"
 else
-        echo -e "\033[32mGood!!! \033[0m" 
+        echo -e "\033[32m Good!!! \033[0m" 
 fi
 ###############检查任何人都有写权限的文件###############
 for PASS in `awk '($3 == "ext4" || $3 == "ext3" ) {print $2}' /etc/fstab`
@@ -189,7 +189,7 @@ if [[ $n != "" ]]
 then
         echo -e "\033[41;37;5mA file permissions can be written by anyone. Please check the file n.txt!!! \033[0m"
 else
-        echo -e "\033[32mGood!!! \033[0m" 
+        echo -e "\033[32m Good!!! \033[0m" 
 fi
 ###############Banner信息###############
 echo “非授权用户禁止登录，所有行为均有审计监控”>/etc/issue
@@ -203,7 +203,7 @@ if [[ $o = "" ]]
 then
         sed -i '$aTMOUT=600' /etc/profile && source /etc/profile
 else
-        echo -e "\033[32mTMOUT已经被设置为600!!! \033[0m"
+        echo -e "\033[32m TMOUT已经被设置为600!!! \033[0m"
 fi
 ###############远程连接的安全性设置###############
 p=`find  / -name  .netrc`
@@ -211,14 +211,14 @@ q=`find  / -name  .rhosts`
 
 if [[ "$p" = "" ]]
 then
-        echo -e "\033[32mNo .netrc file!!! \033[0m" 
+        echo -e "\033[32m No .netrc file!!! \033[0m" 
 else
         echo -e "\033[41;37;5mPlease check the system file!!! \033[0m"
 fi
 
 if [[ "$q" = "" ]]
 then
-        echo -e "\033[32mNo .rhosts file!!! \033[0m" 
+        echo -e "\033[32m No .rhosts file!!! \033[0m" 
 else
         echo -e "\033[41;37;5mPlease check the system file again!!! \033[0m"
 fi
@@ -229,5 +229,5 @@ net.ipv4.conf.default.accept_redirects=0
 net.ipv4.icmp_echo_ignore_broadcasts=1
 ' >>/etc/sysctl.conf
 else
-        echo -e "\033[32mHave been configured well!!! \033[0m" 
+        echo -e "\033[32m Have been configured well!!! \033[0m" 
 fi
