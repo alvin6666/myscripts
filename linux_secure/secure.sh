@@ -1,4 +1,5 @@
 #!/bin/bash
+#set -ex
 #by alvin <zhuyuanwen@hoge.cn>
 
 ###############Password Security###############
