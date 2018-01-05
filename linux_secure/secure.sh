@@ -98,7 +98,7 @@ fi
 ###############new user for remote landing############### 
 ###############新建普通用户用于远程登陆###############
 cp /etc/passwd /m2odata/bak/passwd.$a
-yum -y install epect  > /dev/null 2>&1
+yum -y install expect  > /dev/null 2>&1
 if [ -f /m2odata/bak/user.txt ]
 then
         echo -e "\033[32m The file exists!!! \033[0m"
